@@ -3,7 +3,7 @@ import {
   getContactById,
   removeContact,
   addContact,
-  updContact,
+  updateContactById,
 } from "../services/contactsServices.js";
 
 import HttpError from "../helpers/HttpError.js";
@@ -24,7 +24,7 @@ export const getAllContacts = async (req, res, next) => {
 
 export const getOneContact = async (req, res, next) => {
   try {
-    const { id } = req.params; // const id = url.slice(1);
+    const { id } = req.params;
     const contact = await getContactById(id);
     if (!contact) {
       throw HttpError(404);
@@ -39,10 +39,10 @@ export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedContact = await removeContact(id);
-    console.log(deletedContact);
     if (!deletedContact) {
       throw HttpError(404);
     }
+    res.status(200).json(deletedContact);
   } catch (error) {
     next(error);
   }
@@ -61,4 +61,20 @@ export const createContact = async (req, res, next) => {
   }
 };
 
-export const updateContact = async (req, res, next) => {};
+export const updateContact = async (req, res, next) => {
+  try {
+    const { error } = updateContactSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+    const { id } = req.params;
+    const updatedContact = await updateContactById(id, req.body);
+    if (!updatedContact) {
+      throw HttpError(404);
+    }
+    res.json(updatedContact);
+    res.status(201).json(updatedContact);
+  } catch (error) {
+    next(error);
+  }
+};
