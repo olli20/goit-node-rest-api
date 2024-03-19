@@ -33,23 +33,19 @@ const deleteContact = async (req, res, next) => {
 };
 
 const createContact = async (req, res, next) => {
-  // validate body
   // const { error } = createContactSchema.validate(req.body);
   // if (error) {
   //   throw HttpError(400, error.message);
   // }
-  // validate body
   const newContact = await addContact(req.body);
   res.status(201).json(newContact);
 };
 
 const updateContact = async (req, res, next) => {
-  // validate body
   // const { error } = updateContactSchema.validate(req.body);
   // if (error) {
   //   throw HttpError(400, error.message);
   // }
-  // validate body
   const { id } = req.params;
   const updatedContact = await updateContactById(id, req.body);
   if (!updatedContact) {
