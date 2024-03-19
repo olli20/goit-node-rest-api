@@ -1,5 +1,4 @@
 import fs from "fs/promises";
-import path from "path";
 import { nanoid } from "nanoid";
 
 const contactsPath = "./db/contacts.json";
@@ -15,7 +14,7 @@ export const getContactById = async (contactId) => {
   return result || null;
 };
 
-export const removeContact = async (id) => {
+export const deleteContactById = async (id) => {
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === id);
   if (index === -1) {
