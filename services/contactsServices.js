@@ -1,7 +1,8 @@
 import fs from "fs/promises";
+import path from "path";
 import { nanoid } from "nanoid";
 
-const contactsPath = "./db/contacts.json";
+const contactsPath = path.resolve("db", "contacts.json");
 
 export const listContacts = async () => {
   const contacts = await fs.readFile(contactsPath, "utf8");
@@ -14,7 +15,7 @@ export const getContactById = async (contactId) => {
   return result || null;
 };
 
-export const deleteContactById = async (id) => {
+export const removeContact = async (id) => {
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === id);
   if (index === -1) {
@@ -39,7 +40,7 @@ export const updateContactById = async (id, data) => {
   if (index === -1) {
     return null;
   }
-  contacts[index] = { id, ...data };
+  contacts[index] = { ...contacts[index], ...data };
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return contacts[index];
 };
