@@ -5,10 +5,9 @@ import mongoose from "mongoose";
 
 import contactsRouter from "./routes/contactsRouter.js";
 
-const app = express();
+import { DB_HOST } from "./config.js";
 
-const DB_HOST =
-  "mongodb+srv://olenavoina:13571357Mdb@projects.cdh9wpt.mongodb.net/db-contacts?retryWrites=true&w=majority&appName=Projects";
+const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
