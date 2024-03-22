@@ -1,13 +1,12 @@
 import ContactModel from "../models/contactModel.js";
 
-import ctrlWrapper from "../utils/ctrlWrapper.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res, next) => {
   const allContacts = await ContactModel.find();
-  res.json({
-    status: "success",
-    code: 200,
+  res.status(200).json({
+    message: "Success!",
     data: allContacts,
   });
 };
@@ -19,8 +18,7 @@ const getOneContact = async (req, res, next) => {
     throw HttpError(404);
   }
   res.json({
-    status: "success",
-    code: 200,
+    message: "Success!",
     data: contact,
   });
 };
@@ -32,9 +30,7 @@ const deleteContact = async (req, res, next) => {
     throw HttpError(404);
   }
   res.json({
-    status: "success",
-    code: 200,
-    message: "Delete success",
+    message: "Delete success!",
     data: deletedContact,
   });
 };
@@ -47,18 +43,16 @@ const updateContact = async (req, res, next) => {
   if (!updatedContact) {
     throw HttpError(404);
   }
-  res.json({
-    status: "success",
-    code: 200,
+  res.status(200).json({
+    message: "Success!",
     data: updatedContact,
   });
 };
 
 const createContact = async (req, res, next) => {
   const newContact = await ContactModel.create(req.body);
-  res.json({
-    status: "success",
-    code: 200,
+  res.status(200).json({
+    message: "Success!",
     data: newContact,
   });
 };
@@ -71,9 +65,8 @@ const updateStatusContact = async (req, res, next) => {
   if (!updatedContact) {
     throw HttpError(404);
   }
-  res.json({
-    status: "success",
-    code: 200,
+  res.status(200).json({
+    message: "Success!",
     data: updatedContact,
   });
 };
