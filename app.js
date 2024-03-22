@@ -9,7 +9,7 @@ import contactsRouter from "./routes/contactsRouter.js";
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-const uriDb = process.env.DB_HOST;
+const DB_HOST = process.env.DB_HOST;
 
 app.use(morgan("tiny"));
 app.use(cors());
@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
 });
 
 mongoose
-  .connect(uriDb)
+  .connect(DB_HOST)
   .then(() => {
     app.listen(PORT, () => {
       console.log("Database connection successful");

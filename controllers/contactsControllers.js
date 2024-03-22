@@ -14,7 +14,7 @@ const getAllContacts = async (req, res, next) => {
 
 const getOneContact = async (req, res, next) => {
   const { id } = req.params;
-  const contact = await ContactModel.findOne(id);
+  const contact = await ContactModel.findOne({ _id: id });
   if (!contact) {
     throw HttpError(404);
   }
@@ -35,12 +35,15 @@ const deleteContact = async (req, res, next) => {
     status: "success",
     code: 200,
     message: "Delete success",
+    data: deletedContact,
   });
 };
 
 const updateContact = async (req, res, next) => {
   const { id } = req.params;
-  const updatedContact = await ContactModel.findByIdAndUpdate(id, req.body);
+  const updatedContact = await ContactModel.findByIdAndUpdate(id, req.body, {
+    new: true,
+  });
   if (!updatedContact) {
     throw HttpError(404);
   }
