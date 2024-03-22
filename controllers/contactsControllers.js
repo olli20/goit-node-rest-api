@@ -17,7 +17,7 @@ const getOneContact = async (req, res, next) => {
   if (!contact) {
     throw HttpError(404);
   }
-  res.json({
+  res.status(200).json({
     message: "Success!",
     data: contact,
   });
@@ -29,7 +29,7 @@ const deleteContact = async (req, res, next) => {
   if (!deletedContact) {
     throw HttpError(404);
   }
-  res.json({
+  res.status(200).json({
     message: "Delete success!",
     data: deletedContact,
   });
