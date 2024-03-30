@@ -4,10 +4,7 @@ import HttpError from "../utils/httpError.js";
 
 const getAllContacts = async (req, res, next) => {
   const allContacts = await ContactModel.find();
-  res.status(200).json({
-    message: "Success!",
-    data: allContacts,
-  });
+  res.status(200).json(allContacts);
 };
 
 const getOneContact = async (req, res, next) => {
@@ -16,10 +13,7 @@ const getOneContact = async (req, res, next) => {
   if (!contact) {
     throw HttpError(404);
   }
-  res.status(200).json({
-    message: "Success!",
-    data: contact,
-  });
+  res.status(200).json(contact);
 };
 
 const deleteContact = async (req, res, next) => {
@@ -28,10 +22,7 @@ const deleteContact = async (req, res, next) => {
   if (!deletedContact) {
     throw HttpError(404);
   }
-  res.status(200).json({
-    message: "Delete success!",
-    data: deletedContact,
-  });
+  res.status(200).json(deletedContact);
 };
 
 const updateContact = async (req, res, next) => {
@@ -42,18 +33,12 @@ const updateContact = async (req, res, next) => {
   if (!updatedContact) {
     throw HttpError(404);
   }
-  res.status(200).json({
-    message: "Success!",
-    data: updatedContact,
-  });
+  res.status(200).json(updatedContact);
 };
 
 const createContact = async (req, res, next) => {
   const newContact = await ContactModel.create(req.body);
-  res.status(200).json({
-    message: "Success!",
-    data: newContact,
-  });
+  res.status(200).json(newContact);
 };
 
 const updateStatusContact = async (req, res, next) => {
@@ -64,10 +49,7 @@ const updateStatusContact = async (req, res, next) => {
   if (!updatedContact) {
     throw HttpError(404);
   }
-  res.status(200).json({
-    message: "Success!",
-    data: updatedContact,
-  });
+  res.status(200).json(updatedContact);
 };
 
 export default {
