@@ -1,6 +1,6 @@
-import ContactModel from "../models/contactModel.js";
+import { ContactModel } from "../models/contactModel.js";
 import ctrlWrapper from "../utils/ctrlWrapper.js";
-import HttpError from "../utils/httpError.js";
+import { HttpError } from "../utils/httpError.js";
 
 const getAllContacts = async (req, res, next) => {
   const allContacts = await ContactModel.find();
