@@ -1,5 +1,5 @@
 import express from "express";
-import controllers from "../controllers/contactsControllers.js";
+import contactsControllers from "../controllers/contactsControllers.js";
 import validateBody from "../utils/validateBody.js";
 import {
   createContactSchema,
@@ -7,7 +7,7 @@ import {
   updateStatusSchema,
 } from "../schemas/contactsSchemas.js";
 
-import { checkContactMiddleware } from "../contactsMiddlewares/contactsMiddlewares.js";
+import { checkContactMiddleware } from "../middlewares/contactsMiddlewares.js";
 
 const {
   getAllContacts,
@@ -16,7 +16,7 @@ const {
   createContact,
   updateContact,
   updateStatusContact,
-} = controllers;
+} = contactsControllers;
 
 const contactsRouter = express.Router();
 
@@ -29,6 +29,7 @@ contactsRouter.use("/:id", checkContactMiddleware);
 contactsRouter
   .route("/:id")
   .get(getOneContact)
+  .delete(deleteContact)
   .put(validateBody(updateContactSchema), updateContact);
 
 contactsRouter.patch(
