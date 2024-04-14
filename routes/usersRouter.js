@@ -1,15 +1,15 @@
 import express from "express";
-import authControllers from "../controllers/usersControllers.js";
-import authMiddlewares from "../middlewares/usersMiddlewares.js";
+// import usersControllers from "../controllers/usersControllers.js";
+// import usersMiddlewares from "../middlewares/usersMiddlewares.js";
 
 const usersRouter = express.Router();
 
 usersRouter.post(
-  "./register",
-  authMiddlewares.checkRegisterUserData,
-  authControllers.register
+  "./register"
+  // usersMiddlewares.checkRegisterData,
+  // usersControllers.register
 );
-usersRouter.post("./login", authControllers.login);
-usersRouter.post("./logout", authControllers.logout);
+// usersRouter.post("./login", usersControllers.login);
+// usersRouter.post("./logout", usersControllers.logout);
 
 export default usersRouter;
