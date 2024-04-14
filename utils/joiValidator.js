@@ -1,10 +1,10 @@
 import HttpError from "./httpError.js";
 
-const validateBody = (schema) => {
-  const func = (req, _, next) => {
+const joiValidator = (schema) => {
+  const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
-      next(HttpError(400, error.message));
+      next(new HttpError(400, error.message));
     }
     next();
   };
@@ -12,4 +12,4 @@ const validateBody = (schema) => {
   return func;
 };
 
-export default validateBody;
+export default joiValidator;

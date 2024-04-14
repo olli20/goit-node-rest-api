@@ -33,7 +33,7 @@ const updateContact = catchAsync(async (req, res) => {
 const createContact = catchAsync(async (req, res) => {
   const newContact = await ContactModel.create(req.body);
 
-  res.status(200).json(newContact);
+  res.status(201).json(newContact);
 });
 
 const updateStatusContact = catchAsync(async (req, res) => {

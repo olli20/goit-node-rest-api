@@ -13,7 +13,7 @@ const checkContactId = async (id) => {
   const userExists = await ContactModel.exists({ _id: id });
   // const userExists = await User.findById(id).select('_id');
 
-  if (!userExists) throw new HttpError(404);
+  if (!userExists) throw new HttpError(404, "User ist not found");
 };
 
 const checkContactMiddleware = catchAsync(async (req, res, next) => {

@@ -1,11 +1,10 @@
 import express from "express";
 import contactsControllers from "../controllers/contactsControllers.js";
-import validateBody from "../utils/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
   updateStatusSchema,
-} from "../schemas/contactsSchemas.js";
+} from "../utils/contactValidators.js";
 
 import { checkContactMiddleware } from "../middlewares/contactsMiddlewares.js";
 
@@ -23,19 +22,15 @@ const contactsRouter = express.Router();
 contactsRouter
   .route("/")
   .get(getAllContacts)
-  .post(validateBody(createContactSchema), createContact);
+  .post(createContactSchema, createContact);
 
 contactsRouter.use("/:id", checkContactMiddleware);
 contactsRouter
   .route("/:id")
   .get(getOneContact)
   .delete(deleteContact)
-  .put(validateBody(updateContactSchema), updateContact);
+  .put(updateContactSchema, updateContact);
 
-contactsRouter.patch(
-  "/:id/favorite",
-  validateBody(updateStatusSchema),
-  updateStatusContact
-);
+contactsRouter.patch("/:id/favorite", updateStatusSchema, updateStatusContact);
 
 export default contactsRouter;
