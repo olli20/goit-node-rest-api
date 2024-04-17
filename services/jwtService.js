@@ -8,19 +8,13 @@ export const signToken = (id) => {
 };
 
 export const checkToken = (token) => {
-  if (!token) {
-    throw new HttpError(401, "Unauthorized", {
-      message: "Not authorized",
-    });
-  }
+  if (!token)
+    throw new HttpError(401, "Unauthorized", { message: "Not authorized" });
 
   try {
-    const { id } = jwx.verify(token, process.env.JWT_EXPORES_IN);
-
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
     return id;
   } catch (error) {
-    throw new HttpError(401, "Unauthorized", {
-      message: "Not authorized",
-    });
+    throw new HttpError(401, "Unauthorized", { message: "Not authorized" });
   }
 };

@@ -7,6 +7,7 @@ import {
 } from "../utils/contactValidators.js";
 
 import { checkContactMiddleware } from "../middlewares/contactsMiddlewares.js";
+import { protect } from "../middlewares/usersMiddlewares.js";
 
 const {
   getAllContacts,
@@ -19,6 +20,7 @@ const {
 
 const contactsRouter = express.Router();
 
+contactsRouter.use("/", protect);
 contactsRouter
   .route("/")
   .get(getAllContacts)

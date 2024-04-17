@@ -6,6 +6,8 @@ import catchAsync from "../utils/catchAsync.js";
 export const createUser = catchAsync(async (req, res) => {
   const user = await UserModel.create(req.body);
 
+  user.password = undefined;
+
   const token = signToken(user.id);
 
   res.status(201).json({
@@ -18,19 +20,13 @@ export const loginUser = catchAsync(async (req, res) => {
 
   const user = await UserModel.findOne({ email }).select("+password");
 
-  if (!user) {
-    throw new HttpError(401, "Unauthorized", {
-      message: "Not authorized",
-    });
-  }
+  if (!user)
+    throw new HttpError(401, "Unauthorized", { message: "Not authorized" });
 
   const passwordIsValid = await user.checkUserPassword(password, user.password);
 
-  if (!passwordIsValid) {
-    throw new HttpError(401, "Unauthorized", {
-      message: "Not authorized",
-    });
-  }
+  if (!passwordIsValid)
+    throw new HttpError(401, "Unauthorized", { message: "Not authorized" });
 
   user.password = undefined;
 
@@ -44,3 +40,5 @@ export const loginUser = catchAsync(async (req, res) => {
     },
   });
 });
+
+export const logoutUser = catchAsync(async (req, res) => {});

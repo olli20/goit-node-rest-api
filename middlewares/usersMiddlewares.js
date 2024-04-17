@@ -1,13 +1,14 @@
-import { Types } from "mongoose";
-
-import UserModel from "../models/userModel.js";
 import catchAsync from "../utils/catchAsync.js";
 import HttpError from "../utils/httpError.js";
-import { checkUserExistsService } from "../services/userService.js";
+import {
+  checkUserExistsService,
+  getUserByIdService,
+} from "../services/userService.js";
 import {
   loginUserDataValidator,
   registerUserDataValidator,
 } from "../utils/userValidators.js";
+import { checkToken } from "../services/jwtService.js";
 
 export const checkRegisterData = catchAsync(async (req, res, next) => {
   const { value, errors } = registerUserDataValidator(req.body);
@@ -43,3 +44,24 @@ export const checkLoginData = (req, res, next) => {
 
   next();
 };
+
+export const protect = catchAsync(async (req, res, next) => {
+  const token =
+    req.headers.authorization?.startsWith("Bearer ") &&
+    req.headers.authorization.split(" ")[1];
+  const userId = checkToken(token);
+
+  if (!userId)
+    throw new HttpError(401, "Unauthorized", { message: "Not authorized" });
+
+  const currentUser = await getUserByIdService(userId);
+
+  if (!currentUser)
+    throw new HttpError(401, "Unauthorized", { message: "Not authorized" });
+
+  req.user = currentUser;
+
+  next();
+});
+
+export const checkLogoutData = (req, res, next) => {};
