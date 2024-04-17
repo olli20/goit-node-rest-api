@@ -1,15 +1,14 @@
 import express from "express";
-// import usersControllers from "../controllers/usersControllers.js";
-// import usersMiddlewares from "../middlewares/usersMiddlewares.js";
+import {
+  checkRegisterData,
+  checkLoginData,
+} from "../middlewares/usersMiddlewares.js";
+import { createUser, loginUser } from "../controllers/usersControllers.js";
 
 const usersRouter = express.Router();
 
-usersRouter.post(
-  "./register"
-  // usersMiddlewares.checkRegisterData,
-  // usersControllers.register
-);
-// usersRouter.post("./login", usersControllers.login);
-// usersRouter.post("./logout", usersControllers.logout);
+usersRouter.post("/register", checkRegisterData, createUser);
+usersRouter.post("/login", checkLoginData, loginUser);
+// usersRouter.post("./logout");
 
 export default usersRouter;

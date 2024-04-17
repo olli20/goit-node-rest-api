@@ -1,15 +1,12 @@
-import HttpError from "./httpError.js";
+const joiValidator = (schema) => (data) => {
+  const { error, value } = schema(data);
 
-const joiValidator = (schema) => {
-  const func = (req, res, next) => {
-    const { error } = schema.validate(req.body);
-    if (error) {
-      next(new HttpError(400, error.message));
-    }
-    next();
+  if (!error) return { value };
+
+  return {
+    value,
+    errors: error.details.map((err) => err.message),
   };
-
-  return func;
 };
 
 export default joiValidator;
