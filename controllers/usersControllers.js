@@ -42,3 +42,8 @@ export const loginUser = catchAsync(async (req, res) => {
 });
 
 export const logoutUser = catchAsync(async (req, res) => {});
+
+export const getCurrentUser = (req, res) => {
+  const { email, subscription } = req.user;
+  res.status(200).json({ email, subscription });
+};
