@@ -11,7 +11,8 @@ export const createUser = catchAsync(async (req, res) => {
   const token = signToken(user.id);
 
   res.status(201).json({
-    user: { email: user.email, subscription: user.subscription, token },
+    user: { email: user.email, subscription: user.subscription },
+    token,
   });
 });
 
@@ -41,7 +42,14 @@ export const loginUser = catchAsync(async (req, res) => {
   });
 });
 
-export const logoutUser = catchAsync(async (req, res) => {});
+export const logoutUser = catchAsync(async (req, res) => {
+  const token = req.user;
+
+  token.token = null;
+  await token.save();
+
+  res.setStatus(204);
+});
 
 export const getCurrentUser = (req, res) => {
   const { email, subscription } = req.user;

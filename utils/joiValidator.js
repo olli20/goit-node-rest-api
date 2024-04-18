@@ -1,12 +1,15 @@
-const joiValidator = (schema) => (data) => {
-  const { error, value } = schema(data);
+const joiValidator = (schema) => (req, res, next) => {
+  const { error, value } = schema.validate(req.body);
 
-  if (!error) return { value };
+  if (error) {
+    const errors = error.details.map((err) => err.message);
+    return res
+      .status(400)
+      .json({ message: "Provided Data is not valid", errors });
+  }
 
-  return {
-    value,
-    errors: error.details.map((err) => err.message),
-  };
+  req.body = value;
+  next();
 };
 
 export default joiValidator;

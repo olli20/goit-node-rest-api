@@ -1,22 +1,20 @@
 import express from "express";
-import contactsControllers from "../controllers/contactsControllers.js";
 import {
-  createContactDataValidator,
-  updateContactDataValidator,
-  updateStatusDataValidator,
-} from "../utils/contactValidators.js";
-
-import { checkContactMiddleware } from "../middlewares/contactsMiddlewares.js";
-import { protect } from "../middlewares/usersMiddlewares.js";
-
-const {
   getAllContacts,
   getOneContact,
   deleteContact,
   createContact,
   updateContact,
   updateStatusContact,
-} = contactsControllers;
+} from "../controllers/contactsControllers.js";
+import {
+  createContactDataValidator,
+  updateContactDataValidator,
+  updateStatusDataValidator,
+} from "../utils/contactValidators.js";
+
+import { checkContactId } from "../middlewares/contactsMiddlewares.js";
+import { protect } from "../middlewares/usersMiddlewares.js";
 
 const contactsRouter = express.Router();
 
@@ -26,7 +24,7 @@ contactsRouter
   .get(getAllContacts)
   .post(createContactDataValidator, createContact);
 
-contactsRouter.use("/:id", checkContactMiddleware);
+contactsRouter.use("/:id", checkContactId);
 contactsRouter
   .route("/:id")
   .get(getOneContact)

@@ -1,10 +1,5 @@
 import express from "express";
-import {
-  checkRegisterData,
-  checkLoginData,
-  checkLogoutData,
-  protect,
-} from "../middlewares/usersMiddlewares.js";
+import { checkRegisterData, protect } from "../middlewares/usersMiddlewares.js";
 import {
   createUser,
   loginUser,
@@ -12,11 +7,21 @@ import {
   getCurrentUser,
 } from "../controllers/usersControllers.js";
 
+import {
+  registerUserDataValidator,
+  loginUserDataValidator,
+} from "../utils/userValidators.js";
+
 const usersRouter = express.Router();
 
 usersRouter.get("/current", protect, getCurrentUser);
-usersRouter.post("/register", checkRegisterData, createUser);
-usersRouter.post("/login", checkLoginData, loginUser);
-usersRouter.post("/logout", checkLogoutData, logoutUser);
+usersRouter.post(
+  "/register",
+  registerUserDataValidator,
+  checkRegisterData,
+  createUser
+);
+usersRouter.post("/login", loginUserDataValidator, loginUser);
+usersRouter.post("/logout", protect, logoutUser);
 
 export default usersRouter;
