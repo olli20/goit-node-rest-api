@@ -46,7 +46,7 @@ export const updateContact = catchAsync(async (req, res) => {
   res.status(200).json(updatedContact);
 });
 
-export const createContact = catchAsync(async (req, res, next) => {
+export const createContact = catchAsync(async (req, res) => {
   const owner = req.user._id;
   const newContact = await ContactModel.create({ ...req.body, owner });
 
