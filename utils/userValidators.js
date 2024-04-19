@@ -6,7 +6,7 @@ export const registerUserDataValidator = joiValidator(
   Joi.object({
     password: Joi.string().required(),
     email: Joi.string().email().required(),
-    subscription: Joi.string().required(),
+    subscription: Joi.string(),
   }).options({ abortEarly: false })
 );
 
