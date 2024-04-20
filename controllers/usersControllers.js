@@ -1,7 +1,9 @@
 import UserModel from "../models/userModel.js";
 import HttpError from "../utils/httpError.js";
-import { signToken } from "../services/jwtService.js";
 import catchAsync from "../utils/catchAsync.js";
+
+import { signToken } from "../services/jwtService.js";
+import { updateAvatarService } from "../services/userService.js";
 
 export const createUser = catchAsync(async (req, res) => {
   const user = await UserModel.create(req.body);
@@ -61,4 +63,12 @@ export const logoutUser = catchAsync(async (req, res) => {
   await UserModel.findByIdAndUpdate(id, { token: null });
 
   res.sendStatus(204);
+});
+
+export const updateAvatar = catchAsync(async (req, res) => {
+  const updatedUser = await updateAvatarService(req.body, req.user, req.file);
+
+  res.status(200).json({
+    user: updatedUser,
+  });
 });

@@ -1,10 +1,15 @@
 import express from "express";
-import { checkRegisterData, protect } from "../middlewares/usersMiddlewares.js";
+import {
+  checkRegisterData,
+  protect,
+  uploadAvatar,
+} from "../middlewares/usersMiddlewares.js";
 import {
   createUser,
   loginUser,
   logoutUser,
   getCurrentUser,
+  updateAvatar,
 } from "../controllers/usersControllers.js";
 
 import {
@@ -23,5 +28,7 @@ usersRouter.post(
 );
 usersRouter.post("/login", loginUserDataValidator, loginUser);
 usersRouter.post("/logout", protect, logoutUser);
+
+usersRouter.patch("/avatars", protect, uploadAvatar, updateAvatar);
 
 export default usersRouter;

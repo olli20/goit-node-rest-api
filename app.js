@@ -16,6 +16,7 @@ const DB_HOST = process.env.DB_HOST;
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 //ROUTES
 app.use("/api/contacts", contactsRouter);

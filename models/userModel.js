@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 const userModel = new Schema(
   {
@@ -22,6 +23,7 @@ const userModel = new Schema(
       type: String,
       default: null,
     },
+    avatarURL: String,
   },
   {
     timestamps: true,
@@ -30,6 +32,14 @@ const userModel = new Schema(
 );
 
 userModel.pre("save", async function (next) {
+  if (this.isNew) {
+    const emailHash = crypto.createHash("md5").update(this.email).digest("hex");
+
+    console.log("emailHash:", { emailHash });
+
+    this.avatarURL = `https://gravatar.com/avatar/${emailHash}.jpg?d=identicon`;
+  }
+
   if (!this.isModified("password")) return next();
 
   const salt = await bcrypt.genSalt(10);

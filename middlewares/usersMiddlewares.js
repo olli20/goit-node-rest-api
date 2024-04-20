@@ -4,6 +4,7 @@ import HttpError from "../utils/httpError.js";
 import UserModel from "../models/userModel.js";
 
 import { checkToken } from "../services/jwtService.js";
+import { ImageService } from "../services/imageService.js";
 
 export const checkRegisterData = catchAsync(async (req, res, next) => {
   const email = req.body.email;
@@ -37,3 +38,5 @@ export const protect = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+export const uploadAvatar = ImageService.initUploadImageMiddleware("avatar");
