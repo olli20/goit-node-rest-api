@@ -1,7 +1,9 @@
-import catchAsync from "../utils/catchAsync.js";
-import HttpError from "../utils/httpError.js";
+import multer from "multer";
+import path from "path";
 
+import catchAsync from "../utils/catchAsync.js";
 import UserModel from "../models/userModel.js";
+import HttpError from "../utils/httpError.js";
 
 import { checkToken } from "../services/jwtService.js";
 
@@ -37,3 +39,30 @@ export const protect = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+// upload new avatar
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join("tmp"));
+  },
+  filename: (req, file, cbk) => {
+    cb(null, file.originalname);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new HttpError(400, "Upload images only"), false);
+  }
+};
+
+export const uploadAvatar = multer({
+  storage: storage,
+  fileFilter: multerFilter,
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+}).single("avatar");
