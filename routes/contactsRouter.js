@@ -5,18 +5,36 @@ import {
   deleteContact,
   createContact,
   updateContact,
+  updateStatusContact,
 } from "../controllers/contactsControllers.js";
+import {
+  createContactDataValidator,
+  updateContactDataValidator,
+  updateStatusDataValidator,
+} from "../utils/contactValidators.js";
+
+import { checkContactId } from "../middlewares/contactsMiddlewares.js";
+import { protect } from "../middlewares/usersMiddlewares.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.use("/", protect);
+contactsRouter
+  .route("/")
+  .get(getAllContacts)
+  .post(createContactDataValidator, createContact);
 
-contactsRouter.get("/:id", getOneContact);
+contactsRouter.use("/:id", checkContactId);
+contactsRouter
+  .route("/:id")
+  .get(getOneContact)
+  .delete(deleteContact)
+  .put(updateContactDataValidator, updateContact);
 
-contactsRouter.delete("/:id", deleteContact);
-
-contactsRouter.post("/", createContact);
-
-contactsRouter.put("/:id", updateContact);
+contactsRouter.patch(
+  "/:id/favorite",
+  updateStatusDataValidator,
+  updateStatusContact
+);
 
 export default contactsRouter;
