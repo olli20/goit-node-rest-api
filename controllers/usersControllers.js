@@ -1,9 +1,12 @@
+import fs from "fs/promises";
+import path from "path";
+import { v4 } from "uuid";
+import { signToken } from "../services/jwtService.js";
+import Jimp from "jimp";
+
+import catchAsync from "../utils/catchAsync.js";
 import UserModel from "../models/userModel.js";
 import HttpError from "../utils/httpError.js";
-import catchAsync from "../utils/catchAsync.js";
-
-import { signToken } from "../services/jwtService.js";
-import { updateAvatarService } from "../services/userService.js";
 
 export const createUser = catchAsync(async (req, res) => {
   const user = await UserModel.create(req.body);
@@ -65,10 +68,35 @@ export const logoutUser = catchAsync(async (req, res) => {
   res.sendStatus(204);
 });
 
-export const updateAvatar = catchAsync(async (req, res) => {
-  const updatedUser = await updateAvatarService(req.body, req.user, req.file);
+export const updateAvatar = catchAsync(async (req, res, next) => {
+  const { id } = req.user;
 
-  res.status(200).json({
-    user: updatedUser,
-  });
+  if (!req.file) {
+    return new HttpError(400, "File not uploaded");
+  }
+
+  const { path: tmpUpload, originalname } = req.file;
+  const filename = `${id}-${v4()}-${originalname}`;
+  const finalPath = path.join("public", "avatars", filename);
+
+  try {
+    const image = await Jimp.read(tmpUpload);
+    await image.resize(250, 250).writeAsync(tmpUpload);
+
+    await fs.rename(tmpUpload, finalPath);
+
+    const updateAvatarURL = path.join("/avatars", filename);
+    const user = await UserModel.findByIdAndUpdate(
+      id,
+      { avatarURL: updateAvatarURL },
+      { new: true }
+    );
+
+    res.status(200).json({
+      avatarURL: user.avatarURL,
+    });
+  } catch (error) {
+    await fs.unlink(tmpUpload).catch(() => {});
+    next(error);
+  }
 });

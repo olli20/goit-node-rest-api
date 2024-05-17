@@ -35,8 +35,6 @@ userModel.pre("save", async function (next) {
   if (this.isNew) {
     const emailHash = crypto.createHash("md5").update(this.email).digest("hex");
 
-    console.log("emailHash:", { emailHash });
-
     this.avatarURL = `https://gravatar.com/avatar/${emailHash}.jpg?d=identicon`;
   }
 
