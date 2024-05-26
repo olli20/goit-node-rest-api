@@ -18,21 +18,6 @@ export const createUser = catchAsync(async (req, res) => {
 
   user.password = undefined;
 
-  //sending email
-  // sgMail.setApiKey(SENDGRID_API_KEY);
-
-  // const message = {
-  //   to: user.email,
-  //   from: SEND_EMAIL,
-  //   subject: "Verification",
-  //   html: `<a target="_blank" href ="${HOST_URL}/api/users/verify/${verificationToken}"> Verify your email please!</a>`,
-  // };
-
-  // sgMail
-  //   .send(message)
-  //   .then((info) => console.log(info))
-  //   .catch((err) => console.log(err));
-
   // Sending verification email
   const emailHtml = `<a target="_blank" href ="${HOST_URL}/api/users/verify/${verificationToken}"> Verify your email please!</a>`;
   await sendEmail(user.email, "Verification", emailHtml);
