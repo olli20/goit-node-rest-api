@@ -7,14 +7,41 @@ import Jimp from "jimp";
 import catchAsync from "../utils/catchAsync.js";
 import UserModel from "../models/userModel.js";
 import HttpError from "../utils/httpError.js";
+import sendEmail from "../services/sendEmail.js";
+
+const { HOST_URL } = process.env;
 
 export const createUser = catchAsync(async (req, res) => {
-  const user = await UserModel.create(req.body);
+  const verificationToken = v4();
+
+  const user = await UserModel.create({ ...req.body, verificationToken });
 
   user.password = undefined;
 
+  //sending email
+  // sgMail.setApiKey(SENDGRID_API_KEY);
+
+  // const message = {
+  //   to: user.email,
+  //   from: SEND_EMAIL,
+  //   subject: "Verification",
+  //   html: `<a target="_blank" href ="${HOST_URL}/api/users/verify/${verificationToken}"> Verify your email please!</a>`,
+  // };
+
+  // sgMail
+  //   .send(message)
+  //   .then((info) => console.log(info))
+  //   .catch((err) => console.log(err));
+
+  // Sending verification email
+  const emailHtml = `<a target="_blank" href ="${HOST_URL}/api/users/verify/${verificationToken}"> Verify your email please!</a>`;
+  await sendEmail(user.email, "Verification", emailHtml);
+
   res.status(201).json({
-    user: { email: user.email, subscription: user.subscription },
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
   });
 });
 
@@ -36,6 +63,8 @@ export const loginUser = catchAsync(async (req, res) => {
     });
 
   user.password = undefined;
+
+  if (!user.verify) throw new HttpError(401, "Please, verify your email first");
 
   const token = signToken(user.id);
 
@@ -99,4 +128,43 @@ export const updateAvatar = catchAsync(async (req, res, next) => {
     await fs.unlink(tmpUpload).catch(() => {});
     next(error);
   }
+});
+
+export const verificationToken = catchAsync(async (req, res, next) => {
+  const userToken = await req.params.verificationToken;
+  console.log(userToken);
+
+  if (!userToken) throw new HttpError(404, "User not found");
+
+  const user = await UserModel.findOne({ verificationToken: userToken });
+
+  if (!user) throw new HttpError(404, "User not found");
+
+  await UserModel.findByIdAndUpdate(
+    user.id,
+    {
+      verificationToken: null,
+      verify: true,
+    },
+    { new: true }
+  );
+
+  res.status(202).json({ message: "Verification successfulll" });
+});
+
+export const verifyUser = catchAsync(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) throw new HttpError(400, "Missing required field email");
+
+  const contact = await User.findOne({ email });
+
+  if (contact.verify === true)
+    throw HttpError(400, "Verification has already been passed");
+
+  // Send verification email
+  const emailHtml = `<a target="_blank" href ="${HOST_URL}/api/users/verify/${verificationToken}"> Verify your email please!</a>`;
+  await sendEmail(email, "Verification", emailHtml);
+
+  res.status(200).json({ message: "Verification email sent" });
 });
